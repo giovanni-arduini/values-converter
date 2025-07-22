@@ -1,7 +1,7 @@
-type Currency = {
+type CurrencyInput = {
   name: string;
   date: string;
   rates: {};
 };
 
-export type { Currency };
+export type { CurrencyInput };
