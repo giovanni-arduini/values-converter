@@ -8,6 +8,7 @@ type GlobalContextType = {
   setCurrencies: React.Dispatch<React.SetStateAction<Currency[] | null>>;
   setStartCurrency: React.Dispatch<React.SetStateAction<Currency | null>>;
   setEndCurrency: React.Dispatch<React.SetStateAction<Currency | null>>;
+  convert: (from: string, to: string, amount: number) => Promise<string>;
 };
 
 const GlobalContext = createContext<GlobalContextType | null>(null);
@@ -31,6 +32,26 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
   );
   const [endCurrency, setEndCurrency] = React.useState<Currency | null>(null);
 
+  const convert = async (
+    from: string,
+    to: string,
+    amount: number
+  ): Promise<string> => {
+    const response = await fetch(
+      `https://api.frankfurter.dev/v1/latest?base=${from}&symbols=${to}`
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch API response. Status: ${response.status}`
+      );
+    }
+    const data = await response.json();
+
+    const formattedData = (amount * data.rates[to]).toFixed(2);
+
+    return formattedData;
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -40,6 +61,7 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
         setStartCurrency,
         endCurrency,
         setEndCurrency,
+        convert,
       }}
     >
       {children}
