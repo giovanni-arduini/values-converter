@@ -98,7 +98,6 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
       console.error("Error fetching currencies:", err);
     }
   };
-  console.log(currencies);
 
   // Carico le valute al primo mount
   useEffect(() => {
