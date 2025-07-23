@@ -4,4 +4,9 @@ type CurrencyInput = {
   rates: {};
 };
 
-export type { CurrencyInput };
+type Currency = {
+  code: string;
+  name: string;
+};
+
+export type { CurrencyInput, Currency };
