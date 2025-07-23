@@ -1,16 +1,19 @@
-import { useGlobalContext } from "../Contexts/GlobalContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import type { Currency } from "../types";
 
 type CurrencySelectorProps = {
-  item: { defaultCode: string };
+  item: { defaultCode: string; currencies: Currency[] | null };
 };
 
 export default function CurrencySelector({ item }: CurrencySelectorProps) {
-  const { defaultCode } = item;
-  const { currencies } = useGlobalContext();
-  console.log(defaultCode);
-
+  const { defaultCode, currencies } = item;
   const [value, setValue] = useState(defaultCode);
+
+  useEffect(() => {
+    if (currencies && currencies.some((curr) => curr.code === defaultCode)) {
+      setValue(defaultCode);
+    }
+  }, [currencies, defaultCode]);
 
   const handleSelectChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -18,14 +21,12 @@ export default function CurrencySelector({ item }: CurrencySelectorProps) {
     setValue(e.target.value);
   };
 
-  console.log(value);
-
   return (
     <>
       <div className="">
         <select
           name="currencySelector"
-          defaultValue={value}
+          value={value}
           onChange={handleSelectChange}
         >
           {currencies?.map((curr) => {
