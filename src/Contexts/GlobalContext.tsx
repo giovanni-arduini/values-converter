@@ -1,13 +1,8 @@
 import React, { createContext, useContext, useEffect } from "react";
-import type { CurrencyInput } from "../types";
+import type { CurrencyInput, Currency } from "../types";
 
 export interface CurrenciesResponse {
   [currencyCode: string]: string;
-}
-
-interface Currency {
-  code: string;
-  name: string;
 }
 
 type GlobalContextType = {
@@ -44,6 +39,7 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
     null
   );
 
+  // Funzione di conversione valute - usata in Home
   const convert = async (
     from: string,
     to: string,
@@ -59,26 +55,12 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
     }
     const data = await response.json();
 
-    const formattedData = (amount * data.rates[to]).toFixed(2);
+    const formattedData = (amount * data.rates[to]).toFixed(2).toString();
 
     return formattedData;
   };
 
-  //   const defaultRate = async () => {
-  //     const response = await fetch("https://api.frankfurter.dev/v1/currencies");
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch the currencies list");
-  //     }
-  //     const data: CurrenciesResponse = await response.json();
-  //     console.log(data);
-  //     setCurrencies(data);
-  //     console.log(currencies);
-  //   };
-
-  //   useEffect(() => {
-  //     defaultRate();
-  //   }, []);
-
+  // Funzione per ottenere la lista delle valute -
   const fetchCurrencies = async () => {
     try {
       const response = await fetch("https://api.frankfurter.dev/v1/currencies");
