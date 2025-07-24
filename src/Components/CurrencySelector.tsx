@@ -8,6 +8,7 @@ type CurrencySelectorProps = {
   currencies: Currency[] | null;
   onChangeCode: (code: string) => void;
   onChangeValue: (value: string) => void;
+  excludeCode?: string;
   error?: boolean;
 };
 
@@ -17,6 +18,7 @@ export default function CurrencySelector({
   currencies,
   onChangeCode,
   onChangeValue,
+  excludeCode,
   error,
 }: CurrencySelectorProps) {
   return (
@@ -30,11 +32,14 @@ export default function CurrencySelector({
         onChange={(e) => onChangeValue(e.target.value)}
       />
       <select value={code} onChange={(e) => onChangeCode(e.target.value)}>
-        {currencies?.map((curr) => (
-          <option key={curr.code} value={curr.code}>
-            {curr.name}
-          </option>
-        ))}
+        {currencies?.map((curr) => {
+          if (curr.code === excludeCode) return null;
+          return (
+            <option key={curr.code} value={curr.code}>
+              {curr.name}
+            </option>
+          );
+        })}
       </select>
       {error && (
         <p style={{ color: "red" }}>Inserisci solo numeri intero o decimali</p>

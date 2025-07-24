@@ -169,6 +169,7 @@ export default function Home() {
             currencies={currencies}
             onChangeCode={(newCode) => handleChangeCode("left", newCode)}
             onChangeValue={(val) => handleChangeValue("left", val)}
+            excludeCode={right.code} // <-- esclude questa valuta
           />
 
           <CurrencySelector
@@ -178,6 +179,7 @@ export default function Home() {
             currencies={currencies}
             onChangeCode={(newCode) => handleChangeCode("right", newCode)}
             onChangeValue={(val) => handleChangeValue("right", val)}
+            excludeCode={left.code} // <-- esclude questa valuta
           />
         </div>
       </section>
