@@ -23,38 +23,46 @@ export default function Home() {
   function isValidNumberInput(input: string): boolean {
     if (input.trim() === "") return true; // permetti input vuoto
     const cleaned = input.replace(",", "."); // accetta anche la virgola
-    return /^(\d+([.,]\d*)?|[.,]\d+)$/.test(input);
+    return /^(\d+([.,]\d*)?|[.,]\d+)$/.test(cleaned);
+  }
+
+  function normalizeInput(val: string): string {
+    let cleaned = val.replace(",", ".");
+
+    if (/^0\d/.test(cleaned)) {
+      cleaned = cleaned.replace(/^0(\d+)/, "0.$1");
+    }
+
+    return cleaned;
   }
 
   useEffect(() => {
-    if (leftError || rightError) return;
+    if (leftError || rightError || left.value === "" || right.value === "")
+      return;
 
     const doConversion = async () => {
       try {
         if (activeSide === "left") {
           const result = await convert(
             left.code,
-            left.code,
-            parseFloat(right.value)
-          );
-          setRight((prev) => ({ ...prev, value: result }));
-        } else {
-          const result = await convert(
-            left.code,
             right.code,
             parseFloat(left.value)
           );
-          setLeft((prev) => ({ ...prev, value: result }));
+          setRight((prev) => ({ ...prev, value: result.toString() }));
+        } else {
+          const result = await convert(
+            right.code,
+            left.code,
+            parseFloat(right.value)
+          );
+          setLeft((prev) => ({ ...prev, value: result.toString() }));
         }
       } catch (err) {
         console.error("Conversion error:", err);
       }
     };
 
-    // // Evita di fare la conversione se manca qualcosa
-    // if (left.code && right.code && (left.value >= 0 || right.value >= 0)) {
-    //   doConversion();
-    // }
+    doConversion();
   }, [left, right, activeSide, convert]);
 
   return (
@@ -67,14 +75,20 @@ export default function Home() {
           currencies={currencies}
           onChangeCode={(code) => setLeft((prev) => ({ ...prev, code }))}
           onChangeValue={(val) => {
-            const isValid = isValidNumberInput(val);
-            setLeftError(!isValid);
+            // Se vuoto, svuota anche il campo opposto e blocca API
+            if (val.trim() === "") {
+              setLeft((prev) => ({ ...prev, value: "" }));
+              setRight((prev) => ({ ...prev, value: "" }));
 
+              return;
+            }
+
+            const normalized = normalizeInput(val);
+
+            const isValid = isValidNumberInput(normalized);
+            setLeftError(!isValid);
             if (isValid) {
-              setLeft((prev) => ({
-                ...prev,
-                value: val === "" ? "0" : val.replace(",", "."),
-              }));
+              setLeft((prev) => ({ ...prev, value: normalized }));
               setActiveSide("left");
             }
           }}
@@ -86,14 +100,19 @@ export default function Home() {
           currencies={currencies}
           onChangeCode={(code) => setRight((prev) => ({ ...prev, code }))}
           onChangeValue={(val) => {
-            const isValid = isValidNumberInput(val);
+            if (val.trim() === "") {
+              setRight((prev) => ({ ...prev, value: "" }));
+              setLeft((prev) => ({ ...prev, value: "" }));
+              return;
+            }
+
+            const normalized = normalizeInput(val);
+
+            const isValid = isValidNumberInput(normalized);
             setRightError(!isValid);
 
             if (isValid) {
-              setRight((prev) => ({
-                ...prev,
-                value: val === "" ? "0" : val.replace(",", "."),
-              }));
+              setRight((prev) => ({ ...prev, value: normalized }));
               setActiveSide("right");
             }
           }}
