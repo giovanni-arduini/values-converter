@@ -20,7 +20,7 @@ export default function CurrencySelector({
   error,
 }: CurrencySelectorProps) {
   return (
-    <div>
+    <div className="p-3 bg-white rounded-md	">
       <input
         type="text"
         pattern="^[0-9]\d+(\.\d+)?$"

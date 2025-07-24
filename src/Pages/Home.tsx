@@ -143,9 +143,9 @@ export default function Home() {
 
   return (
     <>
-      <section id="infos" className="container m-auto flex justify-center">
-        <div>
-          <h4>
+      <section id="infos" className="my-10 flex justify-center">
+        <div className=" flex flex-col justify-center ">
+          <h4 className="text-lg">
             {left.value} {left.code}{" "}
             {left.value === "1" ||
             left.value === "1.0" ||
@@ -154,14 +154,14 @@ export default function Home() {
               ? "equivale a"
               : "equivalgono a"}
           </h4>
-          <h2>
+          <h2 className="text-3xl">
             {right.value} {right.code}
           </h2>
         </div>
       </section>
 
       <section id="currenciesSelect" className="container m-auto ">
-        <div className="flex-row justify-center">
+        <div className="flex flex-col items-center gap-1 p-2 bg-gray-200">
           <CurrencySelector
             error={leftError}
             code={left.code}
