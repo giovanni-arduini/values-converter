@@ -1,27 +1,25 @@
 import React, { createContext, useContext, useEffect } from "react";
 import type { CurrencyInput, Currency } from "../types";
-
+import type { CurrencyHistoryResponse } from "../types";
 export interface CurrenciesResponse {
   [currencyCode: string]: string;
 }
 
-export interface CurrencyHistoryResponse {
-  values: {};
-}
-
 type GlobalContextType = {
   currencies: Currency[] | null;
-  currencyHistory: {};
+  currencyHistory: CurrencyHistoryResponse | null;
   startCurrency: CurrencyInput | null;
   endCurrency: CurrencyInput | null;
 
   setCurrencies: React.Dispatch<React.SetStateAction<Currency[] | null>>;
-  setCurrencyHistory: React.Dispatch<React.SetStateAction<{}>>;
+  setCurrencyHistory: React.Dispatch<
+    React.SetStateAction<CurrencyHistoryResponse | null>
+  >;
   setStartCurrency: React.Dispatch<React.SetStateAction<CurrencyInput | null>>;
   setEndCurrency: React.Dispatch<React.SetStateAction<CurrencyInput | null>>;
 
   convert: (from: string, to: string, amount: number) => Promise<string>;
-  fetchConversionHistory: (code: string) => void;
+  fetchConversionHistory: (from: string, to: string) => void;
 };
 
 const GlobalContext = createContext<GlobalContextType | null>(null);
@@ -40,7 +38,8 @@ export function useGlobalContext() {
 
 export function GlobalProvider({ children }: GlobalContextProviderProps) {
   const [currencies, setCurrencies] = React.useState<Currency[] | null>(null);
-  const [currencyHistory, setCurrencyHistory] = React.useState<{}>({});
+  const [currencyHistory, setCurrencyHistory] =
+    React.useState<CurrencyHistoryResponse | null>(null);
   const [startCurrency, setStartCurrency] =
     React.useState<CurrencyInput | null>(null);
   const [endCurrency, setEndCurrency] = React.useState<CurrencyInput | null>(
@@ -70,14 +69,14 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
 
   // Funzione per ottenere storico tra due valute
 
-  const fetchConversionHistory = async (code: string) => {
+  const fetchConversionHistory = async (from: string, to: string) => {
     try {
       const response = await fetch(
-        " https://api.frankfurter.dev/v1/2024-01-01..?symbols=USD"
+        `https://api.frankfurter.dev/v1/2024-01-01..?base=${from}&symbols=${to}`
       );
       if (!response.ok) {
         throw new Error(
-          `Failed to fetch conversion history for ${code}. Status:${response.status}`
+          `Failed to fetch conversion history for ${to}. Status:${response.status}`
         );
       }
       const data: CurrencyHistoryResponse = await response.json();
@@ -111,6 +110,11 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
   // Carico le valute al primo mount
   useEffect(() => {
     fetchCurrencies();
+  }, []);
+
+  // Carico la history con le valute di default
+  useEffect(() => {
+    fetchConversionHistory("EUR", "USD");
   }, []);
 
   return (
