@@ -4,10 +4,11 @@ import type { Currency } from "../types";
 // e alla select la lista di valute e la funzone onChangeCode
 type CurrencySelectorProps = {
   code: string;
-  value: number;
+  value: string;
   currencies: Currency[] | null;
   onChangeCode: (code: string) => void;
   onChangeValue: (value: string) => void;
+  error?: boolean;
 };
 
 export default function CurrencySelector({
@@ -16,9 +17,8 @@ export default function CurrencySelector({
   currencies,
   onChangeCode,
   onChangeValue,
+  error,
 }: CurrencySelectorProps) {
-  const isValidDecimal = /^[0-9]\d+(\.\d+)?$/.test(value.toString());
-
   return (
     <div>
       <input
@@ -36,6 +36,7 @@ export default function CurrencySelector({
           </option>
         ))}
       </select>
+      {error && <p style={{ color: "red" }}>Inserisci un numero valido</p>}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 type CurrencyInput = {
   code: string;
-  value: number;
+  value: string;
 };
 
 type Currency = {
