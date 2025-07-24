@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import CurrencySelector from "../Components/CurrencySelector";
 import { useGlobalContext } from "../Contexts/GlobalContext";
+import HistoryChart from "../Components/HistoryChart";
 import type { CurrencyInput } from "../types";
 
 export default function Home() {
@@ -68,7 +69,16 @@ export default function Home() {
     };
 
     doConversion();
-  }, [left, right, activeSide, convert]);
+  }, [
+    left.code,
+    left.value,
+    right.code,
+    right.value,
+    activeSide,
+    leftError,
+    rightError,
+    convert,
+  ]);
 
   function handleChangeValue(side: "left" | "right", val: string) {
     setLeftError(false);
@@ -132,7 +142,9 @@ export default function Home() {
         />
       </section>
 
-      <section id="resultsDisplay"></section>
+      <section id="resultsDisplay">
+        <HistoryChart></HistoryChart>
+      </section>
     </>
   );
 }
