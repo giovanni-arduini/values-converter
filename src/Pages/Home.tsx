@@ -74,12 +74,14 @@ export default function Home() {
     <>
       <section id="currenciesSelect">
         <CurrencySelector
-          error={leftError || rightError}
+          error={leftError}
           code={left.code}
           value={left.value}
           currencies={currencies}
           onChangeCode={(code) => setLeft((prev) => ({ ...prev, code }))}
           onChangeValue={(val) => {
+            setLeftError(false);
+            setRightError(false);
             // Se vuoto, svuota anche il campo opposto e blocca API
             if (val.trim() === "") {
               setLeft((prev) => ({ ...prev, value: "" }));
@@ -100,11 +102,15 @@ export default function Home() {
         />
 
         <CurrencySelector
+          error={rightError}
           code={right.code}
           value={right.value}
           currencies={currencies}
           onChangeCode={(code) => setRight((prev) => ({ ...prev, code }))}
           onChangeValue={(val) => {
+            setLeftError(false);
+            setRightError(false);
+
             if (val.trim() === "") {
               setRight((prev) => ({ ...prev, value: "" }));
               setLeft((prev) => ({ ...prev, value: "" }));

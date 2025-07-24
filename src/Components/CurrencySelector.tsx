@@ -36,7 +36,9 @@ export default function CurrencySelector({
           </option>
         ))}
       </select>
-      {error && <p style={{ color: "red" }}>Inserisci un numero valido</p>}
+      {error && (
+        <p style={{ color: "red" }}>Inserisci solo numeri intero o decimali</p>
+      )}
     </div>
   );
 }
