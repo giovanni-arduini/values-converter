@@ -101,6 +101,17 @@ export default function Home() {
 
   return (
     <>
+      <section id="infos">
+        <div>
+          <h4>
+            {left.value} {left.code} é uguale a
+          </h4>
+          <h2>
+            {right.value} {right.code}
+          </h2>
+        </div>
+      </section>
+
       <section id="currenciesSelect">
         <CurrencySelector
           error={leftError}
