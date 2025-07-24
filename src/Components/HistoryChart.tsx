@@ -10,22 +10,6 @@ type SeriesType = {
   data: number[];
 }[];
 
-const series: SeriesType = [
-  {
-    name: "series-1",
-    data: [30, 40, 45, 50, 49, 60, 70, 91],
-  },
-];
-
-const options: ApexOptions = {
-  chart: {
-    id: "basic-bar",
-  },
-  xaxis: {
-    categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
-  },
-};
-
 const HistoryChart: React.FC = () => {
   const {
     startCurrency,
@@ -33,6 +17,32 @@ const HistoryChart: React.FC = () => {
     fetchConversionHistory,
     currencyHistory,
   } = useGlobalContext();
+
+  let data: number[] = [];
+  let categories: string[] = [];
+
+  if (currencyHistory) {
+    categories = Object.keys(currencyHistory.rates); // ["2023-12-29", "2024-01-02", "2024-01-03"]
+    data = Object.values(currencyHistory.rates).map(
+      (rateObj) => Object.values(rateObj)[0]
+    ); // [1.1, 1.12, 1.15]
+  }
+
+  const series: SeriesType = [
+    {
+      name: "series-1",
+      data: data,
+    },
+  ];
+
+  const options: ApexOptions = {
+    chart: {
+      id: "basic-bar",
+    },
+    xaxis: {
+      categories: categories,
+    },
+  };
 
   useEffect(() => {
     if (startCurrency && endCurrency) {
@@ -45,12 +55,14 @@ const HistoryChart: React.FC = () => {
   }, [currencyHistory]);
 
   return (
-    <ReactApexChart
-      options={options}
-      series={series}
-      type="line"
-      height={350}
-    />
+    currencyHistory && (
+      <ReactApexChart
+        options={options}
+        series={series}
+        type="line"
+        height={350}
+      />
+    )
   );
 };
 
