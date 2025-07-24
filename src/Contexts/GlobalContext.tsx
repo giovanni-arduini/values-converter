@@ -21,6 +21,7 @@ type GlobalContextType = {
   setEndCurrency: React.Dispatch<React.SetStateAction<CurrencyInput | null>>;
 
   convert: (from: string, to: string, amount: number) => Promise<string>;
+  fetchConversionHistory: (code: string) => void;
 };
 
 const GlobalContext = createContext<GlobalContextType | null>(null);
@@ -124,6 +125,7 @@ export function GlobalProvider({ children }: GlobalContextProviderProps) {
         endCurrency,
         setEndCurrency,
         convert,
+        fetchConversionHistory,
       }}
     >
       {children}
