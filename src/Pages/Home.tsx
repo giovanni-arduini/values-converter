@@ -70,6 +70,35 @@ export default function Home() {
     doConversion();
   }, [left, right, activeSide, convert]);
 
+  function handleChangeValue(side: "left" | "right", val: string) {
+    setLeftError(false);
+    setRightError(false);
+
+    // Se vuoto, svuota anche il campo opposto e blocca API
+    if (val.trim() === "") {
+      setLeft((prev) => ({ ...prev, value: "" }));
+      setRight((prev) => ({ ...prev, value: "" }));
+      return;
+    }
+
+    const normalized = normalizeInput(val);
+    const isValid = isValidNumberInput(normalized);
+
+    if (side === "left") {
+      setLeftError(!isValid);
+      if (isValid) {
+        setLeft((prev) => ({ ...prev, value: normalized }));
+        setActiveSide("left");
+      }
+    } else {
+      setRightError(!isValid);
+      if (isValid) {
+        setRight((prev) => ({ ...prev, value: normalized }));
+        setActiveSide("right");
+      }
+    }
+  }
+
   return (
     <>
       <section id="currenciesSelect">
@@ -79,26 +108,7 @@ export default function Home() {
           value={left.value}
           currencies={currencies}
           onChangeCode={(code) => setLeft((prev) => ({ ...prev, code }))}
-          onChangeValue={(val) => {
-            setLeftError(false);
-            setRightError(false);
-            // Se vuoto, svuota anche il campo opposto e blocca API
-            if (val.trim() === "") {
-              setLeft((prev) => ({ ...prev, value: "" }));
-              setRight((prev) => ({ ...prev, value: "" }));
-
-              return;
-            }
-
-            const normalized = normalizeInput(val);
-
-            const isValid = isValidNumberInput(normalized);
-            setLeftError(!isValid);
-            if (isValid) {
-              setLeft((prev) => ({ ...prev, value: normalized }));
-              setActiveSide("left");
-            }
-          }}
+          onChangeValue={(val) => handleChangeValue("left", val)}
         />
 
         <CurrencySelector
@@ -107,26 +117,7 @@ export default function Home() {
           value={right.value}
           currencies={currencies}
           onChangeCode={(code) => setRight((prev) => ({ ...prev, code }))}
-          onChangeValue={(val) => {
-            setLeftError(false);
-            setRightError(false);
-
-            if (val.trim() === "") {
-              setRight((prev) => ({ ...prev, value: "" }));
-              setLeft((prev) => ({ ...prev, value: "" }));
-              return;
-            }
-
-            const normalized = normalizeInput(val);
-
-            const isValid = isValidNumberInput(normalized);
-            setRightError(!isValid);
-
-            if (isValid) {
-              setRight((prev) => ({ ...prev, value: normalized }));
-              setActiveSide("right");
-            }
-          }}
+          onChangeValue={(val) => handleChangeValue("right", val)}
         />
       </section>
 
