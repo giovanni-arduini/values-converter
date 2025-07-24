@@ -27,12 +27,22 @@ const options: ApexOptions = {
 };
 
 const HistoryChart: React.FC = () => {
-  const { startCurrency, endCurrency, fetchConversionHistory } =
-    useGlobalContext();
+  const {
+    startCurrency,
+    endCurrency,
+    fetchConversionHistory,
+    currencyHistory,
+  } = useGlobalContext();
 
   useEffect(() => {
-    fetchConversionHistory;
+    if (startCurrency && endCurrency) {
+      fetchConversionHistory(startCurrency.code, endCurrency.code);
+    }
   }, [startCurrency, endCurrency]);
+
+  useEffect(() => {
+    console.log("currencyHistory updated:", currencyHistory);
+  }, [currencyHistory]);
 
   return (
     <ReactApexChart

@@ -5,7 +5,13 @@ import HistoryChart from "../Components/HistoryChart";
 import type { CurrencyInput } from "../types";
 
 export default function Home() {
-  const { currencies, convert } = useGlobalContext();
+  const {
+    currencies,
+    convert,
+    setStartCurrency,
+    setEndCurrency,
+    fetchConversionHistory,
+  } = useGlobalContext();
   const [leftError, setLeftError] = useState(false);
   const [rightError, setRightError] = useState(false);
 
@@ -97,17 +103,43 @@ export default function Home() {
     if (side === "left") {
       setLeftError(!isValid);
       if (isValid) {
-        setLeft((prev) => ({ ...prev, value: normalized }));
+        setLeft((prev) => {
+          const updated = { ...prev, value: normalized };
+          setStartCurrency(updated); // <-- aggiorna context
+          return updated;
+        });
         setActiveSide("left");
       }
     } else {
       setRightError(!isValid);
       if (isValid) {
-        setRight((prev) => ({ ...prev, value: normalized }));
+        setRight((prev) => {
+          const updated = { ...prev, value: normalized };
+          setEndCurrency(updated); // <-- aggiorna context
+          return updated;
+        });
         setActiveSide("right");
       }
     }
   }
+
+  const handleChangeCode = (side: "left" | "right", newCode: string): void => {
+    {
+      if (side === "left") {
+        setLeft((prev) => ({
+          ...prev,
+          code: newCode,
+        }));
+        fetchConversionHistory(newCode, right.code);
+      } else {
+        setRight((prev) => ({
+          ...prev,
+          code: newCode,
+        }));
+        fetchConversionHistory(newCode, left.code);
+      }
+    }
+  };
 
   return (
     <>
@@ -128,7 +160,7 @@ export default function Home() {
           code={left.code}
           value={left.value}
           currencies={currencies}
-          onChangeCode={(code) => setLeft((prev) => ({ ...prev, code }))}
+          onChangeCode={(newCode) => handleChangeCode("left", newCode)}
           onChangeValue={(val) => handleChangeValue("left", val)}
         />
 
@@ -137,7 +169,7 @@ export default function Home() {
           code={right.code}
           value={right.value}
           currencies={currencies}
-          onChangeCode={(code) => setRight((prev) => ({ ...prev, code }))}
+          onChangeCode={(newCode) => handleChangeCode("right", newCode)}
           onChangeValue={(val) => handleChangeValue("right", val)}
         />
       </section>
