@@ -1,7 +1,6 @@
 type CurrencyInput = {
-  name: string;
-  date: string;
-  rates: {};
+  code: string;
+  value: number;
 };
 
 type Currency = {
