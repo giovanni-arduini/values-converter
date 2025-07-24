@@ -143,10 +143,16 @@ export default function Home() {
 
   return (
     <>
-      <section id="infos">
+      <section id="infos" className="container m-auto flex justify-center">
         <div>
           <h4>
-            {left.value} {left.code} é uguale a
+            {left.value} {left.code}{" "}
+            {left.value === "1" ||
+            left.value === "1.0" ||
+            left.value === "1.00" ||
+            left.value === "1."
+              ? "equivale a"
+              : "equivalgono a"}
           </h4>
           <h2>
             {right.value} {right.code}
@@ -154,27 +160,29 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="currenciesSelect">
-        <CurrencySelector
-          error={leftError}
-          code={left.code}
-          value={left.value}
-          currencies={currencies}
-          onChangeCode={(newCode) => handleChangeCode("left", newCode)}
-          onChangeValue={(val) => handleChangeValue("left", val)}
-        />
+      <section id="currenciesSelect" className="container m-auto ">
+        <div className="flex-row justify-center">
+          <CurrencySelector
+            error={leftError}
+            code={left.code}
+            value={left.value}
+            currencies={currencies}
+            onChangeCode={(newCode) => handleChangeCode("left", newCode)}
+            onChangeValue={(val) => handleChangeValue("left", val)}
+          />
 
-        <CurrencySelector
-          error={rightError}
-          code={right.code}
-          value={right.value}
-          currencies={currencies}
-          onChangeCode={(newCode) => handleChangeCode("right", newCode)}
-          onChangeValue={(val) => handleChangeValue("right", val)}
-        />
+          <CurrencySelector
+            error={rightError}
+            code={right.code}
+            value={right.value}
+            currencies={currencies}
+            onChangeCode={(newCode) => handleChangeCode("right", newCode)}
+            onChangeValue={(val) => handleChangeValue("right", val)}
+          />
+        </div>
       </section>
 
-      <section id="resultsDisplay">
+      <section id="resultsDisplay" className="container m-auto">
         <HistoryChart></HistoryChart>
       </section>
     </>
