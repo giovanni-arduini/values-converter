@@ -37,7 +37,12 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (leftError || rightError || left.value === "" || right.value === "")
+    if (leftError || rightError) return;
+
+    if (
+      (activeSide === "left" && left.value === "") ||
+      (activeSide === "right" && right.value === "")
+    )
       return;
 
     const doConversion = async () => {
