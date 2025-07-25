@@ -22,7 +22,7 @@ export default function CurrencySelector({
   error,
 }: CurrencySelectorProps) {
   return (
-    <div className="p-3 bg-white rounded-md	">
+    <div className="p-3 bg-white rounded-md flex items-center flex-col	">
       <input
         type="text"
         pattern="^[0-9]\d+(\.\d+)?$"

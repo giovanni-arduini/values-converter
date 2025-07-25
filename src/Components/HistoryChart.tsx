@@ -46,7 +46,7 @@ const HistoryChart: React.FC = () => {
     },
     // dataLabels: { enabled: true },
     xaxis: {
-      tickAmount: 20,
+      tickAmount: 10,
       // range: 390,
       // stepSize: 10,
       categories: categories,
