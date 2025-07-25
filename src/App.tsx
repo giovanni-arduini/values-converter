@@ -1,17 +1,17 @@
 import "./App.css";
 import { GlobalProvider } from "./Contexts/GlobalContext";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes, HashRouter } from "react-router-dom";
 import Home from "./Pages/Home";
 
 function App() {
   return (
     <>
       <GlobalProvider>
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route path="/" element={<Home />}></Route>
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </GlobalProvider>
     </>
   );
